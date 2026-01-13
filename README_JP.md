@@ -88,6 +88,10 @@ PS側からのLCD制御テストプロジェクトです。
 - ブートイメージ（`documents/TF_boot_image/`）
 - Ethernet PHY資料（`documents/ether_phy/`）
 
+## 参考購入先
+
+- https://ja.aliexpress.com/item/1005006074065888.html
+
 ## ライセンス
 
 MIT License

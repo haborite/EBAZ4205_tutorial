@@ -89,6 +89,10 @@ The following materials are included in the `documents/` folder:
 - Boot images (`documents/TF_boot_image/`)
 - Ethernet PHY documents (`documents/ether_phy/`)
 
+## Where to Buy (Reference)
+
+- https://ja.aliexpress.com/item/1005006074065888.html
+
 ## License
 
 MIT License
