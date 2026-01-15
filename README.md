@@ -89,6 +89,10 @@ The following materials are included in the `documents/` folder:
 - Boot images (`documents/TF_boot_image/`)
 - Ethernet PHY documents (`documents/ether_phy/`)
 
+## Articles
+
+- https://qiita.com/tomorrow56/items/7a6340c04b87f584288a
+
 ## Where to Buy (Reference)
 
 - https://ja.aliexpress.com/item/1005006074065888.html
