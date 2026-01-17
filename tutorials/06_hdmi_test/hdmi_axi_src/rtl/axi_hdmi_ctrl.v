@@ -188,4 +188,10 @@ always @(posedge PCK) begin
     end
 end
 
+// Initialize to known values on reset or startup
+initial begin
+    timing_sel_sync = 1'b0;      // VGA timing
+    pattern_sel_sync = 2'b00;    // Color bars
+end
+
 endmodule
