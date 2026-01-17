@@ -192,6 +192,10 @@ end
 initial begin
     timing_sel_sync = 1'b0;      // VGA timing
     pattern_sel_sync = 2'b00;    // Color bars
+    timing_sel_meta = 1'b0;      // VGA timing
+    timing_sel_sync_ff = 1'b0;   // VGA timing
+    pattern_sel_meta = 2'b00;    // Color bars
+    pattern_sel_sync_ff = 2'b00; // Color bars
 end
 
 endmodule
