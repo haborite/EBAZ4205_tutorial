@@ -1,6 +1,6 @@
 # Zynq-7000 AMD Official documents link
 
-### Design Hub
+## Design Hub
 https://docs.amd.com/v/u/en-US/dh0050-zynq-7000-design-overview-hub
 
 ### DS190 Zynq-7000 SoC Data Sheet
@@ -18,4 +18,7 @@ https://www.amd.com/ja/developer/resources/adaptive-socs-and-fpgas/package-pinou
 ### UG821 Zynq 7000 SoC Software Developers Guide
 https://docs.amd.com/r/en-US/ug821-zynq-7000-swdev
 
+
+## Vitis Core Development Kit Download
+https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html
 
