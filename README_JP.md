@@ -92,6 +92,10 @@ PS側からのLCD制御テストプロジェクトです。
 
 - https://qiita.com/tomorrow56/items/7a6340c04b87f584288a
 
+## リソース
+
+- https://github.com/xjtuecho/EBAZ4205/
+
 ## 参考購入先
 
 - https://ja.aliexpress.com/item/1005006074065888.html

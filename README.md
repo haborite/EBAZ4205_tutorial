@@ -93,6 +93,10 @@ The following materials are included in the `documents/` folder:
 
 - https://qiita.com/tomorrow56/items/7a6340c04b87f584288a
 
+## Resources
+
+- https://github.com/xjtuecho/EBAZ4205/
+
 ## Where to Buy (Reference)
 
 - https://ja.aliexpress.com/item/1005006074065888.html
