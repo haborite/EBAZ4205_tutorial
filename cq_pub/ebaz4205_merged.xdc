@@ -1,6 +1,6 @@
 ## EBAZ4205 Merged Constraints File
 ## EBAZ4205 マージ済み制約ファイル
-## 
+##
 ## This file merges general constraints and HDMI AXI constraints.
 ## このファイルは、一般的な制約とHDMI AXI制約をマージしたものです。
 
@@ -63,8 +63,8 @@ set_property -dict {PACKAGE_PIN U18 IOSTANDARD LVCMOS33} [get_ports FCLK_CLK3]
 # UARTおよびGPIO
 # ==============================================================================
 # UART Interface / UARTインターフェース
-set_property -dict {PACKAGE_PIN H16 IOSTANDARD LVCMOS33} [get_ports UART_1_rxd]
-set_property -dict {PACKAGE_PIN H17 IOSTANDARD LVCMOS33} [get_ports UART_1_txd]
+set_property -dict {PACKAGE_PIN H16 IOSTANDARD LVCMOS33} [get_ports UART_0_rxd]
+set_property -dict {PACKAGE_PIN H17 IOSTANDARD LVCMOS33} [get_ports UART_0_txd]
 
 # General Purpose I/O / 汎用I/O /LCD_PIN(SPI)
 # BL(CS): T20
