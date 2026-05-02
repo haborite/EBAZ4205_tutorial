@@ -4,6 +4,13 @@
 
 秋月電子の「FT2232D USBシリアル2ch変換モジュールキット」（[商品番号: 116897](https://akizukidenshi.com/catalog/g/g116897/)）を使用して、Xilinx（AMD）FPGA用のJTAGプログラマーを作成できます。
 
+> **重要: Vivado 2024.2 ではFT2232DをDigilentケーブルとして完全認識できません。**
+>
+> cs_server（Digilentドライバ）がFT2232H前提のプロトコルでJTAGを制御するため、
+> FT2232DではJTAGスキャンが失敗します。Vivado Hardware Managerを使用する場合は
+> openFPGALoaderのXVCサーバーを経由するか、FT2232H/純正Digilentケーブルをご利用ください。
+> 詳細な手順は `programming-guide.md` の「FT2232DとVivado 2024.2の使い方」を参照してください。
+
 ## 必要な部品
 
 ### メインボード
