@@ -1,7 +1,7 @@
-/**********
- * lcd_ext_ps example
+/*
+ * lcd_ext_ps: simple lcd test application
  *   ps7_uart    115200 (configured by bootrom/bsp)
- **********/
+ */
 
 #include <stdio.h>
 
@@ -11,6 +11,7 @@
 #include "xplatform_info.h"
 
 #include <xil_printf.h>
+#include "sleep.h"
 
 #define WHITE	0xFFFF
 #define BLACK	0x0000
@@ -52,14 +53,26 @@ XGpioPs Gpio;  /* The driver instance for GPIO Device. */
 #define LCD_RES_HIGH XGpioPs_WritePin(&Gpio, EMIO_LCD_RES, 1)
 #define LCD_RES_LOW  XGpioPs_WritePin(&Gpio, EMIO_LCD_RES, 0)
 
-void delay_spi_nop(){
+static void delayMilliseconds(u32 milliseconds){
+  const u32 maxChunk = 1000U;
+  if(milliseconds == 0U){
+    return;
+  }
+  while(milliseconds > 0U){
+    const u32 chunk = (milliseconds > maxChunk) ? maxChunk : milliseconds;
+    usleep(chunk * 1000U);
+    milliseconds -= chunk;
+  }
+}
+
+static void delay_spi_nop(void){
   volatile int Delay;
   for (Delay = 0; Delay < 1; Delay++);
 }
 
-void spi_send(unsigned char dat){
-  unsigned char i;
-//  LCD_CS_LOW;
+static void spi_send(u8 dat){
+  u8 i;
+  LCD_CS_LOW;
   for(i=0;i<8;i++){
     LCD_SCL_LOW;
     delay_spi_nop();
@@ -103,12 +116,13 @@ void Lcd_Gpio_Init(void){
   XGpioPs_WritePin(&Gpio, EMIO_LCD_SDA, 1);
 }
 
-void delay(unsigned int i){
-  unsigned int Delay;
-  unsigned int k;
-  for(k=0;k<i;k++){
-    for (Delay = 0; Delay < 10000; Delay++);
-  }
+static void lcdHardwareReset(void){
+  LCD_RES_HIGH;
+  delayMilliseconds(1U);
+  LCD_RES_LOW;
+  delayMilliseconds(1U);
+  LCD_RES_HIGH;
+  delayMilliseconds(120U);
 }
 
 void LCD_WR_DATA8(u8 dat){
@@ -122,16 +136,11 @@ void LCD_WR_REG(u8 dat){
 }
 
 void Lcd_Init(void){
-  LCD_RES_HIGH;
-  delay(500);
-  LCD_RES_LOW;
-  delay(500);
-  LCD_RES_HIGH;
-  delay(500);
+  lcdHardwareReset();
   LCD_WR_REG(0x36);
   LCD_WR_DATA8(0x00);
   LCD_WR_REG(0x3A);
-  LCD_WR_DATA8(0x05);
+  LCD_WR_DATA8(0x55);
   LCD_WR_REG(0xB2);
   LCD_WR_DATA8(0x0C);
   LCD_WR_DATA8(0x0C);
@@ -187,7 +196,9 @@ void Lcd_Init(void){
   LCD_WR_DATA8(0x23);
   LCD_WR_REG(0x21);
   LCD_WR_REG(0x11);
+  delayMilliseconds(120U);
   LCD_WR_REG(0x29);
+  delayMilliseconds(20U);
 }
 
 void LCD_WR_DATA(u16 dat){
@@ -290,15 +301,14 @@ int main(void){
   while(1){
     LCD_Test2(0);
     print("COLOR BAR\n\r");
-	delay(500);
+	delayMilliseconds(500U);
     LCD_Test();
-	delay(5000);
+	delayMilliseconds(5000U);
 	for(clr=0;clr<8;clr++){
       xil_printf("Fill Screen Color=%d\n\r", clr);
       LCD_Test2(clr);
-      delay(500);
+	  delayMilliseconds(500U);
 	}
   }
   return XST_SUCCESS;
 }
-
