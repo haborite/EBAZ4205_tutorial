@@ -4,82 +4,15 @@
 
 FT2232DをXilinx JTAGプログラマーとして動作させるには、EEPROMに特定の設定を書き込む必要があります。このガイドでは、複数の方法を詳しく説明します。
 
-## 動作確認済み手順（Vivado 2024.2 + FT2232D）
+## 本ガイドの範囲
 
-FT2232DでVivado Hardware Managerを使用するには、
-openFPGALoaderをXVCサーバーとして起動しVivadoをクライアントとして接続する。
+このドキュメントは **FT2232DのEEPROMを書き換えてXilinx JTAGケーブル互換設定を行う手順** に特化しています。
 
-> **bcdDeviceは0x0500（FT2232D標準値）のまま使用する。**
-> 0x0700に変更するとVivadoのcs_serverがデバイスを掴んでXVCサーバーと競合する。
+- EEPROMの編集・バックアップ方法を中心に記載
+- JTAGプログラミングやVivado/Vitis/openOCDでの運用手順は `jtag-operations.md` に分離
 
-### ステップ1: EEPROMのbcdDeviceを0x0500に設定
-
-新品またはすでに0x0500ならスキップ。0x0700になっている場合は以下を実行：
-
-```bash
-sudo rmmod ftdi_sio
-
-cat > ~/reset_bcddevice.py << 'EOF'
-import usb.core, struct
-
-dev = usb.core.find(idVendor=0x0403, idProduct=0x6010)
-dev.ctrl_transfer(0x40, 0x91, 0x0500, 3, b'')
-
-n = 128
-words = [struct.unpack('<H', bytes(dev.ctrl_transfer(0xC0, 0x90, 0, i, 2)))[0] for i in range(n)]
-cksum = 0xAAAA
-for w in words[:-1]:
-    cksum ^= w
-    cksum = ((cksum << 1) | (cksum >> 15)) & 0xFFFF
-dev.ctrl_transfer(0x40, 0x91, cksum, n - 1, b'')
-print(f"bcdDevice -> 0x0500, checksum: 0x{cksum:04X}")
-EOF
-
-sudo python3 ~/reset_bcddevice.py
-# USBを抜き差し
-```
-
-### ステップ2: XVCサーバーを起動（ターミナル1）
-
-```bash
-sudo rmmod ftdi_sio
-openFPGALoader -c ft2232 --xvc
-# INFO: To connect to this xvcServer instance, use: TCP:hostname:3721
-```
-
-このターミナルは起動したままにする。
-
-### ステップ3: VivadoをXVCクライアントとして接続（ターミナル2）
-
-```bash
-vivado -mode tcl
-```
-
-```tcl
-open_hw_manager
-connect_hw_server -url localhost:3121
-open_hw_target -xvc_url localhost:3721
-open_hw_target -xvc_url localhost:3721
-refresh_hw_target
-get_hw_devices
-# arm_dap_0 xc7z010_1
-```
-
-> `open_hw_target -xvc_url localhost:3721` は2回実行する（1回目で接続確立、2回目で完了）。
-
-### 重要な注意事項
-
-- Vivado使用前は必ず`sudo rmmod ftdi_sio`を実行すること。
-- 永続化には`/etc/modprobe.d/blacklist-ftdi.conf`にblacklist設定を追加すること。
-
-#### ftdi_sioの永続的な無効化（再起動後も有効）
-
-```bash
-echo "blacklist ftdi_sio" | sudo tee /etc/modprobe.d/blacklist-ftdi.conf
-sudo update-initramfs -u
-```
-
-設定後は再起動することで、以降`sudo rmmod ftdi_sio`は不要になる。
+> JTAGワークフロー（openFPGALoader、XVC、openOCDなど）が必要な場合は
+> [jtag-operations.md](./jtag-operations.md) を参照してください。
 
 ## 前提条件
 
@@ -673,6 +606,65 @@ arm_dap_0 xc7z010_1
 > **注意**: `open_hw_target -xvc_url localhost:3721` は**2回実行する**。
 > 1回目で接続が確立され、2回目で正常に完了する。
 
+### 方法C: openOCDでJTAG制御・プログラミング
+
+Vivadoを使わずに、openOCD単体でJTAGアクセスやビットストリーム書き込みを行う手順。
+
+#### 1. openOCDのインストール
+
+```bash
+sudo apt install openocd
+```
+
+#### 2. FT2232D用インターフェース設定ファイルを作成
+
+`~/openocd-ft2232d.cfg` など任意のパスに以下を保存（ADBUS0-3をTCK/TDI/TDO/TMSに接続している前提）：
+
+```tcl
+interface ftdi
+transport select jtag
+adapter speed 1000              ;# 1MHz。必要に応じて調整
+
+ftdi_vid_pid 0x0403 0x6010
+ftdi_channel 0
+ftdi_layout_init 0x0000 0x000b  ;# AD0-AD3を出力、残り入力
+
+# Zynqのリセット信号を配線している場合のみ有効化
+# ftdi_layout_signal nSRST -data 0x0080
+# ftdi_layout_signal nTRST -data 0x0100
+```
+
+> **ポイント**
+> - `adapter speed` はFT2232Dの配線品質に合わせて 500kHz〜3MHz 程度で調整。
+> - `ftdi_layout_signal` 行は未接続ならコメントアウトのままで問題なし。
+
+#### 3. openOCDの起動とJTAG確認
+
+```bash
+sudo rmmod ftdi_sio
+openocd -f ~/openocd-ft2232d.cfg -f target/zynq_7000.cfg
+```
+
+ログに `Info : JTAG tap: xc7z010.cpu tap/device found` 等が出れば接続成功。
+
+#### 4. PLビットストリームの書き込み例
+
+```bash
+openocd -f ~/openocd-ft2232d.cfg -f target/zynq_7000.cfg \
+  -c "init; pld load 0 build/your_design.bit; shutdown"
+```
+
+#### 5. PS (ARM) デバッグやELFロード
+
+```bash
+openocd -f ~/openocd-ft2232d.cfg -f target/zynq_7000.cfg \
+  -c "init; halt; load_image ps_app.elf; resume; shutdown"
+```
+
+> **補足**
+> - `target/zynq_7000.cfg` は openOCD 同梱のボード定義。Versal/Artixなど別デバイスでは適宜置き換え。
+> - openOCD起動後は `telnet localhost 4444` や `gdb-multiarch` から通常通り制御可能。
+
 ### ftdi_sioの永続的な無効化
 
 毎回`sudo rmmod ftdi_sio`を実行するのが面倒な場合：
@@ -692,12 +684,10 @@ sudo update-initramfs -u
 4. **方法1**: Vivadoの`program_ftdi`スクリプト（FT2232Hのみ対応、FT2232D不可）
 5. **方法2**: FT_PROG（非推奨、Xilinx設定を破壊）
 
-### 用途別ツール選択
+### JTAG運用について
 
-| 用途 | 推奨ツール | コマンド例 |
-| --- | --- | --- |
-| FPGA書き込み | openFPGALoader | `openFPGALoader -c ft2232 design.bit` |
-| Vivado ILA/VIOデバッグ | openFPGALoader XVC | `openFPGALoader -c ft2232 --xvc` |
-| ARM PSデバッグ | openFPGALoader XVC + Vivado | XVC経由でarm_dap_0を使用 |
+EEPROM書き込み後のJTAGアクセス（openFPGALoader、XVC、openOCD など）に関しては
+[`jtag-operations.md`](./jtag-operations.md) に詳しいワークフローをまとめています。
+Vivado/Vitisからの接続方法やトラブルシューティングが必要な場合はそちらを参照してください。
 
 必ず事前にEEPROMをバックアップし、慎重に作業を進めてください。
