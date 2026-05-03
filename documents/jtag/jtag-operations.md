@@ -131,7 +131,6 @@ vivado -mode tcl   # または xsct
 
 ```tcl
 open_hw_manager
-connect_hw_server -url localhost:3121
 set_param hw_server.xvc_jtag_frequency 1000000
 open_hw_target -xvc_url localhost:3721
 open_hw_target -xvc_url localhost:3721
