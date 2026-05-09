@@ -17,20 +17,28 @@ This repository contains tutorial projects to learn development for the Xilinx Z
 
 ```
 EBAZ4205_tutorial/
-├── documents/              # Datasheets, schematics, reference materials, boot images, etc.
-│   ├── EBAZ4205/            # Board materials (schematics, manuals, images, etc.)
-│   ├── xilinx_user_guide/   # Official Xilinx User Guides
-│   ├── TF_boot_image/       # Boot images
-│   ├── ether_phy/           # Ethernet PHY-related documents
-│   ├── adapter/             # Adapter / verification materials
-│   └── ...
-├── tutorials/              # Tutorial projects
-│   ├── 01_blink/          # LED blinking (basic)
-│   ├── 02_blinkspeed/     # LED blink speed control
-│   ├── 03_pattern/        # Pattern display (HDMI output)
-│   ├── 04_gradation/      # Gradation display (HDMI output)
-│   ├── 05_Zynq7000/       # Zynq PS+PL integrated project
-│   └── PS_LCD_test/       # PS-side LCD test
+├── documents/                    # Datasheets, schematics, reference materials, boot images, etc.
+│   ├── EBAZ4205/                  # Board materials (schematics, manuals, images, etc.)
+│   ├── xilinx_user_guide/         # Official Xilinx User Guides
+│   ├── TF_boot_image/             # Boot images
+│   ├── ether_phy/                 # Ethernet PHY-related documents
+│   ├── adapter/                   # Adapter / verification materials
+│   └── jtag/                      # JTAG-related documents
+├── tutorials/                    # Tutorial projects
+│   ├── 01_blink/                  # LED blinking (basic)
+│   ├── 02_blinkspeed/             # LED blink speed control
+│   ├── 03_pattern/                # Pattern display (HDMI output)
+│   ├── 04_gradation/              # Gradation display (HDMI output)
+│   ├── 05_Zynq7000/               # Zynq PS+PL integrated project
+│   ├── 06_hdmi_test/              # HDMI output test
+│   ├── ebaz4205_merged.xdc        # Merged constraint file (XDC)
+│   └── ebaz4205_pin_assign.csv    # Pin assignment CSV
+├── cq_pub/                       # CQ publication materials
+│   ├── 01_led/                    # LED project files
+│   ├── 02_z7000_ps/               # Zynq7000 PS project files
+│   ├── 03_vitis_classic_z7000_ps/ # Vitis Classic PS project files
+│   ├── ebaz4205_merged.xdc        # Merged constraint file (XDC)
+│   └── ebaz4205_pin_assign.csv    # Pin assignment CSV
 └── LICENSE
 ```
 

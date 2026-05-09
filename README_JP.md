@@ -16,20 +16,28 @@ EBAZ4205（Zynq-7000 SoC搭載ボード）を使用したFPGA/SoC開発チュー
 
 ```
 EBAZ4205_tutorial/
-├── documents/              # データシート・回路図・リファレンス資料・ブートイメージ等
-│   ├── EBAZ4205/            # ボード資料（回路図、説明書、イメージ等）
-│   ├── xilinx_user_guide/   # Xilinx公式User Guide
-│   ├── TF_boot_image/       # ブートイメージ
-│   ├── ether_phy/           # Ethernet PHY関連資料
-│   ├── adapter/             # アダプタ/検証用資材
-│   └── ...
-├── tutorials/              # チュートリアルプロジェクト
-│   ├── 01_blink/          # LED点滅（基本）
-│   ├── 02_blinkspeed/     # LED点滅速度制御
-│   ├── 03_pattern/        # パターン表示（HDMI出力）
-│   ├── 04_gradation/      # グラデーション表示（HDMI出力）
-│   ├── 05_Zynq7000/       # Zynq PS+PL統合プロジェクト
-│   └── PS_LCD_test/       # PS側LCDテスト
+├── documents/                    # データシート・回路図・リファレンス資料・ブートイメージ等
+│   ├── EBAZ4205/                  # ボード資料（回路図、説明書、イメージ等）
+│   ├── xilinx_user_guide/         # Xilinx公式User Guide
+│   ├── TF_boot_image/             # ブートイメージ
+│   ├── ether_phy/                 # Ethernet PHY関連資料
+│   ├── adapter/                   # アダプタ/検証用資材
+│   └── jtag/                      # JTAG関連資料
+├── tutorials/                    # チュートリアルプロジェクト
+│   ├── 01_blink/                  # LED点滅（基本）
+│   ├── 02_blinkspeed/             # LED点滅速度制御
+│   ├── 03_pattern/                # パターン表示（HDMI出力）
+│   ├── 04_gradation/              # グラデーション表示（HDMI出力）
+│   ├── 05_Zynq7000/               # Zynq PS+PL統合プロジェクト
+│   ├── 06_hdmi_test/              # HDMI出力テスト
+│   ├── ebaz4205_merged.xdc        # 統合制約ファイル（XDC）
+│   └── ebaz4205_pin_assign.csv    # ピンアサインCSV
+├── cq_pub/                       # CQ出版向け資材
+│   ├── 01_led/                    # LEDプロジェクトファイル
+│   ├── 02_z7000_ps/               # Zynq7000 PSプロジェクトファイル
+│   ├── 03_vitis_classic_z7000_ps/ # Vitis Classic PSプロジェクトファイル
+│   ├── ebaz4205_merged.xdc        # 統合制約ファイル（XDC）
+│   └── ebaz4205_pin_assign.csv    # ピンアサインCSV
 └── LICENSE
 ```
 
