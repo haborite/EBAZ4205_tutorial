@@ -1,278 +1,233 @@
-# HDMI AXI Control Project
+# HDMI Pattern Generator with AXI4-Lite Control
 
-AXI4-Lite controlled HDMI pattern generator for EBAZ4205 board.
+HDMI test pattern generator with AXI4-Lite bus control for EBAZ4205 (Zynq-7010).
+Timing presets and test patterns can be dynamically switched from the PS (Processing System) via the AXI bus.
 
 ## Features
 
-- **Dual timing presets**: VGA 640x480@60Hz / 480p 720x480@60Hz
-- **Three test patterns**: Color bars / Checkerboard / Gradation
-- **AXI4-Lite control**: Register-based configuration from PS
-- **VSync-synchronized updates**: Tear-free pattern/timing switching
-- **Dual MMCM architecture**: Glitch-free pixel clock switching
+- **AXI4-Lite slave interface** for register control from PS
+- **3 timing presets** with dynamic switching
+  - VGA 640x480 @60Hz (pixel clock 25.179 MHz)
+  - 480p 720x480 @60Hz (pixel clock 27.000 MHz)
+  - 720p 1280x720 @60Hz (pixel clock 74.250 MHz)
+- **10 test patterns** with dynamic switching
+  - 0: Color bars (8 vertical bars)
+  - 1: Checkerboard (32x32 pixel grid)
+  - 2: Horizontal gradation
+  - 3: Crosshatch (64px grid)
+  - 4: Border (1px white frame)
+  - 5: RGB full field (cycles R/G/B/W per frame)
+  - 6: Vertical gradation
+  - 7: Walking bar (animation)
+  - 8: SMPTE color bars (75% + PLUGE)
+  - 9: Zone plate (concentric circles)
+- **MMCM DRP (Dynamic Reconfiguration Port)** for runtime clock switching
+- **VSync-synchronized register update** for tear-free switching
+- **Clock domain crossing** with safe double-FF synchronization
+- **Digilent rgb2dvi IP** (external SerialClk mode) for TMDS/HDMI signal generation
 
-## Project Structure
+## Target Board
+
+| Item | Specification |
+|------|---------------|
+| Board | EBAZ4205 |
+| FPGA | Xilinx Zynq-7010 (XC7Z010) |
+| System Clock | 100 MHz (PS FCLK_CLK1) |
+| Reset | Active Low (PS FCLK_RESET1_N) |
+| HDMI Output | TMDS differential pairs (DATA x3 + CLK x1) |
+
+## Directory Structure
+
+```text
+hdmi_axi_src/
+├── vivado/
+│   ├── src/                     # RTL source code
+│   │   ├── README.md
+│   │   ├── README_JP.md         # Japanese version
+│   │   ├── constraints/
+│   │   │   └── pattern_hdmi_axi.xdc    # Pin / clock constraints
+│   │   ├── ip/
+│   │   │   ├── rgb2dvi/             # Digilent rgb2dvi IP (VHDL)
+│   │   │   │   └── src/
+│   │   │   │       ├── rgb2dvi.vhd
+│   │   │   │       ├── ClockGen.vhd
+│   │   │   │       ├── DVI_Constants.vhd
+│   │   │   │       ├── OutputSERDES.vhd
+│   │   │   │       ├── SyncAsync.vhd
+│   │   │   │       ├── SyncAsyncReset.vhd
+│   │   │   │       └── TMDS_Encoder.vhd
+│   │   │   └── mmcm_drp/            # Xilinx mmcm_drp DRP controller
+│   │   │       ├── mmcm_drp.v
+│   │   │       └── mmcm_pll_drp_func_7s_mmcm.vh
+│   │   └── rtl/
+│   │       ├── pattern_hdmi_axi.v   # Top module
+│   │       ├── axi_hdmi_ctrl.v      # AXI4-Lite register block
+│   │       ├── pattern_multi.v      # Test pattern generator
+│   │       ├── syncgen_multi.v      # Sync signal generator
+│   │       ├── pckgen_triple.v      # Triple pixel clock generator
+│   │       └── pckgen_dual.v        # (Legacy: for reference)
+│   └── drp/                     # DRP related files
+└── vitis_src/                   # Vitis software source
+    ├── hdmi_axi.h
+    ├── hdmi_axi.c
+    ├── main.c
+    └── README.txt
+```
+
+## Module Hierarchy
+
+```text
+pattern_hdmi_axi (top)
+├── axi_hdmi_ctrl            AXI4-Lite register control + CDC + reconfig request
+├── pattern_multi            Test pattern generation
+│   └── syncgen_multi        Sync signal generation (H/V counters, HSYNC, VSYNC)
+│       └── pckgen_triple    Pixel clock + 5x clock generator (MMCM DRP)
+└── rgb2dvi                  RGB to TMDS/HDMI conversion (external SerialClk mode)
+```
+
+## AXI4-Lite Register Map
+
+Base address depends on Vivado Block Design assignment.
+
+### 0x00: Control Register (R/W)
+
+| Bits | Field | Description |
+|------|-------|-------------|
+| [1:0] | `timing_sel` | Timing preset: 0 = VGA 640x480, 1 = 480p 720x480, 2 = 720p 1280x720 |
+| [5:2] | `pattern_sel` | Test pattern select (0..9) |
+| [31:6] | - | Reserved (read as 0) |
+
+Writing a new `timing_sel` value automatically triggers MMCM DRP reconfiguration.
+The `reconfig_busy` bit in the Status Register becomes 1 during reconfiguration and returns to 0 when complete.
+
+### 0x04: Status Register (R)
+
+| Bits | Field | Description |
+|------|-------|-------------|
+| [0] | `locked` | MMCM lock status: 1 = locked |
+| [1] | `reconfig_busy` | MMCM reconfiguration in progress: 1 = busy |
+| [31:2] | - | Reserved (read as 0) |
+
+## Timing Preset Details
+
+### VGA 640x480 @60Hz (`timing_sel = 0`)
+
+| Parameter | Value |
+|-----------|-------|
+| Pixel Clock | 25.179 MHz (target 25.175 MHz, error +0.02%) |
+| 5x SerialClk | 125.893 MHz |
+| Horizontal Period | 800 pixels (active 640 + front 16 + sync 96 + back 48) |
+| Vertical Period | 525 lines (active 480 + front 10 + sync 2 + back 33) |
+| Sync Polarity | Active-low |
+
+### 480p 720x480 @60Hz (`timing_sel = 1`)
+
+| Parameter | Value |
+|-----------|-------|
+| Pixel Clock | 27.000 MHz |
+| 5x SerialClk | 135.000 MHz |
+| Horizontal Period | 858 pixels (active 720 + front 16 + sync 62 + back 60) |
+| Vertical Period | 525 lines (active 480 + front 9 + sync 6 + back 30) |
+| Sync Polarity | Active-low |
+
+### 720p 1280x720 @60Hz (`timing_sel = 2`)
+
+| Parameter | Value |
+|-----------|-------|
+| Pixel Clock | 74.250 MHz |
+| 5x SerialClk | 371.250 MHz |
+| Horizontal Period | 1650 pixels (active 1280 + front 110 + sync 40 + back 220) |
+| Vertical Period | 750 lines (active 720 + front 5 + sync 5 + back 20) |
+| Sync Polarity | Active-high (per CEA-861) |
+
+## MMCM DRP Reconfiguration
+
+The `pckgen_triple` module uses the Xilinx `mmcm_drp` module (from Clocking Wizard IP) to perform DRP-based runtime clock switching.
+
+Reconfiguration timing:
 
 ```
-06_hdmi_test/
-├── hdmi_axi_src/           # Source files for independent project creation
-│   ├── rtl/                # RTL modules
-│   │   ├── pckgen_dual.v
-│   │   ├── syncgen_multi.v
-│   │   ├── pattern_multi.v
-│   │   ├── axi_hdmi_ctrl.v
-│   │   └── pattern_hdmi_axi.v
-│   ├── ip/                 # IP sources
-│   │   └── rgb2dvi/        # rgb2dvi IP (VHDL)
-│   └── constraints/        # Constraint files
-│       └── pattern_hdmi_axi.xdc
-├── create_vivado_project.tcl  # Automated project creation script
-├── create_bd.tcl           # Block Design creation script
-├── README.md               # This file (English)
-└── README_JP.md            # Japanese version
+AXI Write (timing_sel change)
+         |
+         v
+    +----+----+
+    | axi_hdmi_ctrl | reconfig_req pulse (1 S_AXI_ACLK cycle)
+    +----+----+
+         |
+         v
+    +----+----+
+    | pckgen_triple | timing_sel_imm -> S2 parameter
+    +----+----+
+         |
+         v
+    +----+----+
+    | mmcm_drp | DRP Read-Modify-Write sequence
+    +----+----+
+         |
+         v
+    MMCME2_ADV register update
+         |
+         v
+    PLL relock (tLOCK ~100us-1ms)
+         |
+         v
+    SRDY pulse
+         |
+         v
+    reconfig_done
 ```
 
-## Hardware Architecture
+## Vivado Design Notes
 
-### RTL Modules
+### rgb2dvi IP Configuration
 
-- `pattern_hdmi_axi.v` - Top-level AXI wrapper
-- `axi_hdmi_ctrl.v` - AXI4-Lite register block with clock domain crossing
-- `pattern_multi.v` - Multi-pattern test signal generator
-- `syncgen_multi.v` - Multi-preset sync signal generator
-- `pckgen_dual.v` - Dual MMCM pixel clock generator
+```verilog
+rgb2dvi #(
+    .kGenerateSerialClk("FALSE"),  // External SerialClk (5x)
+    .kRstActiveHigh("TRUE")
+) rgb2dvi_inst ( ... );
+```
 
-### Block Design
+**IMPORTANT**: The `kGenerateSerialClk` generic must be set to `"FALSE"` to disable the internal PLL and use the external `SerialClk` input. This prevents the `[DRC PDRC-43] PLL_adv_ClkFrequency_div_no_dclk` error during bitstream generation.
 
-- Zynq PS (processing_system7)
-- AXI Interconnect
-- pattern_hdmi_axi (custom RTL)
+### X_INTERFACE Constraints
 
-## Register Map
+```verilog
+(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 HDMI_CLK_N CLK" *)
+(* X_INTERFACE_PARAMETER = "FREQ_HZ 25175000, POLARITY ACTIVE_HIGH" *)
+output HDMI_CLK_N, HDMI_CLK_P,
+```
 
-Base address: `0x43C00000` (AXI4-Lite, 4KB range)
+The `FREQ_HZ` parameter is required to suppress `[IP_Flow 19-4751]` warnings. This is a representative value (VGA mode); actual frequency changes with timing preset.
 
-### Register Summary
-
-| Offset | Name | Access | Description |
-|--------|------|--------|-------------|
-| 0x00 | CTRL | R/W | Control register (timing_sel, pattern_sel) |
-| 0x04 | STATUS | R | Status register (MMCM lock) |
-| 0x08-0xFFF | - | - | Reserved |
-
-### Control Register (0x00) - R/W
-
-| Bit | Field | Access | Reset | Description |
-|-----|-------|--------|-------|-------------|
-| 0 | timing_sel | R/W | 0 | Timing preset selection<br>0 = VGA 640x480@60Hz (25.175 MHz)<br>1 = 480p 720x480@60Hz (27 MHz) |
-| 2:1 | pattern_sel | R/W | 00 | Test pattern selection<br>00 = Color bars (8 colors)<br>01 = Checkerboard (32x32 pixels)<br>10 = Gradation (horizontal)<br>11 = Reserved |
-| 31:3 | Reserved | R | 0 | Reserved, read as 0 |
-
-**Notes:**
-- Register updates are synchronized to pixel clock domain
-- Changes take effect at next VSync boundary (tear-free switching)
-- Both MMCMs must be locked before valid output
-
-### Status Register (0x04) - Read-only
-
-| Bit | Field | Access | Reset | Description |
-|-----|-------|--------|-------|-------------|
-| 0 | locked | R | 0 | MMCM lock status<br>0 = Not locked (no valid output)<br>1 = Both MMCMs locked (valid output) |
-| 31:1 | Reserved | R | 0 | Reserved, read as 0 |
-
-**Notes:**
-- Check this register after power-on or reset
-- Both VGA and 480p MMCMs must be locked for proper operation
-- Lock time is typically < 10ms after reset release
-
-### Register Access Examples
+## C Example (Register Access)
 
 ```c
-// Read control register
-uint32_t ctrl = CTRL_REG;
-uint8_t timing = ctrl & 0x01;
-uint8_t pattern = (ctrl >> 1) & 0x03;
+#include "xil_io.h"
 
-// Write control register (VGA, Checkerboard)
-CTRL_REG = (1 << 1) | (0 << 0);  // pattern_sel=1, timing_sel=0
+#define HDMI_CTRL_BASE 0x43C00000  // Depends on Block Design
 
-// Check MMCM lock status
-while (!(STATUS_REG & 0x01)) {
-    // Wait for MMCMs to lock
+// Select 720p timing + SMPTE color bars pattern
+Xil_Out32(HDMI_CTRL_BASE, 0x00000022);  // timing_sel=2, pattern_sel=8
+
+// Wait for MMCM reconfiguration complete
+while (Xil_In32(HDMI_CTRL_BASE + 0x04) & 0x02) {
+    // polling reconfig_busy
 }
 
-// Atomic update (recommended)
-uint32_t new_ctrl = (pattern_sel << 1) | timing_sel;
-CTRL_REG = new_ctrl;
-```
-
-## Usage
-
-### Software Control (C)
-
-```c
-#include <stdint.h>
-
-#define HDMI_CTRL_BASE  0x43C00000
-#define CTRL_REG        (*(volatile uint32_t*)(HDMI_CTRL_BASE + 0x00))
-#define STATUS_REG      (*(volatile uint32_t*)(HDMI_CTRL_BASE + 0x04))
-
-// VGA 640x480, Color bars
-CTRL_REG = 0x00;
-
-// VGA 640x480, Checkerboard
-CTRL_REG = 0x02;
-
-// VGA 640x480, Gradation
-CTRL_REG = 0x04;
-
-// 480p 720x480, Color bars
-CTRL_REG = 0x01;
-
-// 480p 720x480, Checkerboard
-CTRL_REG = 0x03;
-
-// 480p 720x480, Gradation
-CTRL_REG = 0x05;
-
-// Check MMCM lock status
-if (STATUS_REG & 0x01) {
-    // MMCMs are locked
+// Check lock status
+if (Xil_In32(HDMI_CTRL_BASE + 0x04) & 0x01) {
+    // MMCM locked, output active
 }
 ```
 
-### Python Control (via /dev/mem)
+## References
 
-```python
-import mmap
-import struct
+- [EBAZ4205 Hardware Reference](https://github.com/xjtuecho/EBAZ4205)
+- [Digilent rgb2dvi IP](https://github.com/Digilent/vivado-library)
+- [Xilinx 7 Series Clocking Resources (UG472)](https://docs.xilinx.com/v/u/en-US/ug472_7series_clocking)
+- [Xilinx Clocking Wizard LogiCORE IP (PG065)](https://docs.xilinx.com/v/u/en-US/pg065-clk-wiz)
 
-HDMI_BASE = 0x43C00000
-PAGE_SIZE = 4096
+## License
 
-with open('/dev/mem', 'r+b') as f:
-    mem = mmap.mmap(f.fileno(), PAGE_SIZE, offset=HDMI_BASE)
-    
-    # VGA, Color bars
-    mem[0:4] = struct.pack('<I', 0x00)
-    
-    # 480p, Checkerboard
-    mem[0:4] = struct.pack('<I', 0x03)
-    
-    # Read status
-    status = struct.unpack('<I', mem[4:8])[0]
-    print(f"MMCM locked: {status & 0x01}")
-```
-
-## Vivado Setup
-
-### Quick Start: Automated Project Creation
-
-Run the provided Tcl script to create a complete Vivado project:
-
-```bash
-cd tutorials/06_hdmi_test
-vivado -mode batch -source create_vivado_project.tcl
-```
-
-Or in Vivado Tcl Console:
-```tcl
-cd tutorials/06_hdmi_test
-source create_vivado_project.tcl
-```
-
-This script will:
-- Create new Vivado project (`vivado_project/hdmi_axi_project.xpr`)
-- Add all RTL files (pckgen_dual, syncgen_multi, pattern_multi, axi_hdmi_ctrl, pattern_hdmi_axi)
-- Add rgb2dvi IP sources
-- Create Block Design with Zynq PS and AXI connections
-- Add constraints file
-- Assign AXI address (0x43C00000)
-- Create HDL wrapper
-
-After script completion, open the project in Vivado GUI and proceed with synthesis/implementation.
-
-### Manual Setup (Alternative)
-
-If you prefer manual setup:
-
-#### 1. Add RTL Files
-
-Add the following files to your Vivado project:
-- `pckgen_dual.v`
-- `syncgen_multi.v`
-- `pattern_multi.v`
-- `axi_hdmi_ctrl.v`
-- `pattern_hdmi_axi.v`
-- rgb2dvi sources (VHDL files)
-
-#### 2. Create Block Design
-
-Run the Block Design creation script:
-```tcl
-source create_bd.tcl
-```
-
-Or manually:
-1. Create new Block Design
-2. Add Zynq PS IP
-3. Add `pattern_hdmi_axi` as module reference
-4. Connect PS M_AXI_GP0 to pattern_hdmi_axi S_AXI via AXI Interconnect
-5. Assign address: 0x43C00000, range 4K
-6. Make external: CLK, RST, HDMI_CLK_N/P, HDMI_N/P
-
-#### 3. Add Constraints
-
-Use the provided `pattern_hdmi_axi.xdc` constraint file.
-
-#### 4. Generate Bitstream
-
-1. Generate Block Design
-2. Create HDL wrapper
-3. Run Synthesis
-4. Run Implementation
-5. Generate Bitstream
-
-## Timing Details
-
-### VGA 640x480@60Hz
-- Pixel clock: 25.175 MHz
-- H: 640 + 16 (front) + 96 (sync) + 48 (back) = 800 total
-- V: 480 + 10 (front) + 2 (sync) + 33 (back) = 525 total
-
-### 480p 720x480@60Hz
-- Pixel clock: 27.000 MHz
-- H: 720 + 16 (front) + 62 (sync) + 60 (back) = 858 total
-- V: 480 + 9 (front) + 6 (sync) + 30 (back) = 525 total
-
-## Pattern Descriptions
-
-### Color Bars (pattern_sel=0)
-8 vertical bars: White, Yellow, Cyan, Green, Magenta, Red, Blue, Black
-
-### Checkerboard (pattern_sel=1)
-32x32 pixel black and white squares
-
-### Gradation (pattern_sel=2)
-Horizontal grayscale gradient from black to white
-
-## Notes
-
-- Register updates are synchronized to VSync to prevent tearing
-- Both MMCMs must be locked before valid output
-- Pixel clock switching uses BUFGMUX for glitch-free operation
-- rgb2dvi IP supports 25-30 MHz pixel clock range (both presets fit)
-
-## Troubleshooting
-
-**No display output**
-- Check MMCM lock status via STATUS_REG
-- Verify HDMI cable connection
-- Check CLK input (33.333 MHz)
-
-**Tearing/artifacts when switching**
-- Normal during mode switch (1-2 frames)
-- If persistent, check VSync signal integrity
-
-**Wrong colors**
-- Verify rgb2dvi IP configuration
-- Check HDMI_N/P pin assignments
+This project is provided as-is for educational and hobbyist purposes.
