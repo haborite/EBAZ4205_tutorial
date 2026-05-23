@@ -1,4 +1,4 @@
-# EBAZ4205 Tutorial
+# EBAZ4205 Tutorial forked for a board variant
 [English](README.md) | 日本語
 
 EBAZ4205（Zynq-7000 SoC搭載ボード）を使用したFPGA/SoC開発チュートリアル集です。
@@ -84,8 +84,8 @@ PS側からのLCD制御テストプロジェクトです。
 
 ## 開発環境
 
-- **Vivado**: 2023.2
-- **Vitis**: 2023.2
+- **Vivado**: 2024.2
+- **Vitis**: 2024.2
 
 ## 参考資料
 
@@ -96,18 +96,14 @@ PS側からのLCD制御テストプロジェクトです。
 - ブートイメージ（`documents/TF_boot_image/`）
 - Ethernet PHY資料（`documents/ether_phy/`）
 
-## 記事
-
-- https://qiita.com/tomorrow56/items/7a6340c04b87f584288a
-
 ## リソース
 
 - https://github.com/xjtuecho/EBAZ4205/
 
 ## 参考購入先
 
-- https://ja.aliexpress.com/item/1005006074065888.html
-- SDカードスロット型番: [SHOU HAN MEM2055-00-140-00-A (LCSC C393941)](https://www.lcsc.com/product-detail/C393941.html)
+- https://ja.aliexpress.com/item/1005004460394748.html
+
 
 ## ライセンス
 

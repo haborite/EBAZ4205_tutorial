@@ -1,4 +1,4 @@
-# EBAZ4205 Tutorial
+# EBAZ4205 Tutorial forked for a board variant
 
 English | [日本語](README_JP.md)
 
@@ -85,8 +85,8 @@ A test project for LCD control from the PS side.
 
 ## Development Environment
 
-- **Vivado**: 2023.2
-- **Vitis**: 2023.2
+- **Vivado**: 2024.2
+- **Vitis**: 2024.2
 
 ## References
 
@@ -97,17 +97,13 @@ The following materials are included in the `documents/` folder:
 - Boot images (`documents/TF_boot_image/`)
 - Ethernet PHY documents (`documents/ether_phy/`)
 
-## Articles
-
-- https://qiita.com/tomorrow56/items/7a6340c04b87f584288a
-
 ## Resources
 
 - https://github.com/xjtuecho/EBAZ4205/
 
 ## Where to Buy (Reference)
 
-- https://ja.aliexpress.com/item/1005006074065888.html
+- https://ja.aliexpress.com/item/1005004460394748.html
 
 ## License
 
