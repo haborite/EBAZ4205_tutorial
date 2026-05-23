@@ -1,8 +1,8 @@
-Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
-| Date         : Sat Mar 30 15:46:25 2024
-| Host         : DESKTOP-JPBOQSB running 64-bit major release  (build 9200)
+| Tool Version : Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
+| Date         : Sat May 23 19:00:45 2026
+| Host         : DESKTOP-IRLIVJV running 64-bit major release  (build 9200)
 | Command      : report_methodology -file blinkspeed_methodology_drc_routed.rpt -pb blinkspeed_methodology_drc_routed.pb -rpx blinkspeed_methodology_drc_routed.rpx
 | Design       : blinkspeed
 | Device       : xc7z010clg400-1
@@ -22,13 +22,13 @@ Table of Contents
             Netlist: netlist
           Floorplan: design_1
       Design limits: <entire design considered>
-             Max violations: <unlimited>
-             Violations found: 5
-+-----------+----------+-------------------------------+------------+
-| Rule      | Severity | Description                   | Violations |
-+-----------+----------+-------------------------------+------------+
-| TIMING-18 | Warning  | Missing input or output delay | 5          |
-+-----------+----------+-------------------------------+------------+
+             Max checks: <unlimited>
+             Checks found: 5
++-----------+----------+-------------------------------+--------+
+| Rule      | Severity | Description                   | Checks |
++-----------+----------+-------------------------------+--------+
+| TIMING-18 | Warning  | Missing input or output delay | 5      |
++-----------+----------+-------------------------------+--------+
 
 2. REPORT DETAILS
 -----------------

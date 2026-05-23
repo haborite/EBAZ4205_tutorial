@@ -10,10 +10,14 @@ create_clock -add -name sys_clk_pin -period 30.00 -waveform {0 4} [get_ports { C
 #Reset
 set_property -dict { PACKAGE_PIN V13   IOSTANDARD LVCMOS33 } [get_ports { RST }]; # BTN[3]
 
-#RGB LED
-set_property -dict { PACKAGE_PIN W14   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[2] }]; # Red
-set_property -dict { PACKAGE_PIN W13   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[1] }]; # Green
-set_property -dict { PACKAGE_PIN U12   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[0] }]; # Blue
+#Three LEDs
+set_property -dict { PACKAGE_PIN H18   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[2] }]; # Left
+set_property -dict { PACKAGE_PIN K17   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[1] }]; # Center
+set_property -dict { PACKAGE_PIN E19   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[0] }]; # Right
+
+# set_property -dict { PACKAGE_PIN W14   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[2] }]; # Red
+# set_property -dict { PACKAGE_PIN W13   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[1] }]; # Green
+# set_property -dict { PACKAGE_PIN U12   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB[0] }]; # Blue
 
 #set_property -dict { PACKAGE_PIN M15   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB2[2] }]; # Red
 #set_property -dict { PACKAGE_PIN L14   IOSTANDARD LVCMOS33 } [get_ports { LED_RGB2[1] }]; # Green

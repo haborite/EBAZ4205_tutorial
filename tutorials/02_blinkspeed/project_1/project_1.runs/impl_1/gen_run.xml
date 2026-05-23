@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7z010clg400-1" LaunchTime="1711781066">
-  <File Type="ROUTE-PWR" Name="blinkspeed_power_routed.rpt"/>
+<GenRun Id="impl_1" LaunchPart="xc7z010clg400-1" LaunchTime="1779530334">
   <File Type="PA-TCL" Name="blinkspeed.tcl"/>
-  <File Type="ROUTE-PWR-SUM" Name="blinkspeed_power_summary_routed.pb"/>
   <File Type="REPORTS-TCL" Name="blinkspeed_reports.tcl"/>
-  <File Type="OPT-RQA-PB" Name="blinkspeed_rqa_opted.pb"/>
-  <File Type="BITSTR-MMI" Name="blinkspeed.mmi"/>
-  <File Type="OPT-METHODOLOGY-DRC" Name="blinkspeed_methodology_drc_opted.rpt"/>
   <File Type="INIT-TIMING" Name="blinkspeed_timing_summary_init.rpt"/>
-  <File Type="OPT-TIMING" Name="blinkspeed_timing_summary_opted.rpt"/>
   <File Type="OPT-DCP" Name="blinkspeed_opt.dcp"/>
   <File Type="OPT-DRC" Name="blinkspeed_drc_opted.rpt"/>
+  <File Type="OPT-METHODOLOGY-DRC" Name="blinkspeed_methodology_drc_opted.rpt"/>
   <File Type="OPT-HWDEF" Name="blinkspeed.hwdef"/>
+  <File Type="OPT-TIMING" Name="blinkspeed_timing_summary_opted.rpt"/>
+  <File Type="OPT-RQA-PB" Name="blinkspeed_rqa_opted.pb"/>
   <File Type="PWROPT-DCP" Name="blinkspeed_pwropt.dcp"/>
   <File Type="PWROPT-DRC" Name="blinkspeed_drc_pwropted.rpt"/>
   <File Type="PWROPT-TIMING" Name="blinkspeed_timing_summary_pwropted.rpt"/>
@@ -23,16 +20,12 @@
   <File Type="PLACE-CTRL" Name="blinkspeed_control_sets_placed.rpt"/>
   <File Type="PLACE-SIMILARITY" Name="blinkspeed_incremental_reuse_placed.rpt"/>
   <File Type="PLACE-PRE-SIMILARITY" Name="blinkspeed_incremental_reuse_pre_placed.rpt"/>
-  <File Type="BG-BIN" Name="blinkspeed.bin"/>
   <File Type="PLACE-TIMING" Name="blinkspeed_timing_summary_placed.rpt"/>
-  <File Type="ROUTE-PWR-RPX" Name="blinkspeed_power_routed.rpx"/>
   <File Type="PLACE-RQA-PB" Name="blinkspeed_rqa_placed.pb"/>
   <File Type="POSTPLACE-PWROPT-DCP" Name="blinkspeed_postplace_pwropt.dcp"/>
-  <File Type="BITSTR-MSK" Name="blinkspeed.msk"/>
   <File Type="POSTPLACE-PWROPT-TIMING" Name="blinkspeed_timing_summary_postplace_pwropted.rpt"/>
   <File Type="PHYSOPT-DCP" Name="blinkspeed_physopt.dcp"/>
   <File Type="PHYSOPT-DRC" Name="blinkspeed_drc_physopted.rpt"/>
-  <File Type="BITSTR-RBT" Name="blinkspeed.rbt"/>
   <File Type="PHYSOPT-TIMING" Name="blinkspeed_timing_summary_physopted.rpt"/>
   <File Type="ROUTE-ERROR-DCP" Name="blinkspeed_routed_error.dcp"/>
   <File Type="ROUTE-DCP" Name="blinkspeed_routed.dcp"/>
@@ -43,7 +36,9 @@
   <File Type="ROUTE-METHODOLOGY-DRC" Name="blinkspeed_methodology_drc_routed.rpt"/>
   <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="blinkspeed_methodology_drc_routed.rpx"/>
   <File Type="ROUTE-METHODOLOGY-DRC-PB" Name="blinkspeed_methodology_drc_routed.pb"/>
-  <File Type="ROUTE-RQS-PB" Name="blinkspeed_rqs_routed.pb"/>
+  <File Type="ROUTE-PWR" Name="blinkspeed_power_routed.rpt"/>
+  <File Type="ROUTE-PWR-SUM" Name="blinkspeed_power_summary_routed.pb"/>
+  <File Type="ROUTE-PWR-RPX" Name="blinkspeed_power_routed.rpx"/>
   <File Type="ROUTE-STATUS" Name="blinkspeed_route_status.rpt"/>
   <File Type="ROUTE-STATUS-PB" Name="blinkspeed_route_status.pb"/>
   <File Type="ROUTE-TIMINGSUMMARY" Name="blinkspeed_timing_summary_routed.rpt"/>
@@ -54,17 +49,22 @@
   <File Type="ROUTE-BUS-SKEW" Name="blinkspeed_bus_skew_routed.rpt"/>
   <File Type="ROUTE-BUS-SKEW-PB" Name="blinkspeed_bus_skew_routed.pb"/>
   <File Type="ROUTE-BUS-SKEW-RPX" Name="blinkspeed_bus_skew_routed.rpx"/>
+  <File Type="ROUTE-RQS-PB" Name="blinkspeed_rqs_routed.pb"/>
   <File Type="POSTROUTE-PHYSOPT-DCP" Name="blinkspeed_postroute_physopt.dcp"/>
   <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="blinkspeed_postroute_physopt_bb.dcp"/>
   <File Type="POSTROUTE-PHYSOPT-TIMING" Name="blinkspeed_timing_summary_postroute_physopted.rpt"/>
   <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="blinkspeed_timing_summary_postroute_physopted.pb"/>
   <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="blinkspeed_timing_summary_postroute_physopted.rpx"/>
   <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="blinkspeed_bus_skew_postroute_physopted.rpt"/>
-  <File Type="BG-BIT" Name="blinkspeed.bit"/>
   <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="blinkspeed_bus_skew_postroute_physopted.pb"/>
   <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="blinkspeed_bus_skew_postroute_physopted.rpx"/>
+  <File Type="BG-BIT" Name="blinkspeed.bit"/>
+  <File Type="BG-BIN" Name="blinkspeed.bin"/>
+  <File Type="BITSTR-MSK" Name="blinkspeed.msk"/>
+  <File Type="BITSTR-RBT" Name="blinkspeed.rbt"/>
   <File Type="BITSTR-NKY" Name="blinkspeed.nky"/>
   <File Type="BITSTR-BMM" Name="blinkspeed_bd.bmm"/>
+  <File Type="BITSTR-MMI" Name="blinkspeed.mmi"/>
   <File Type="PDI-FILE" Name="blinkspeed.pdi"/>
   <File Type="BOOT-PDI-FILE" Name="blinkspeed_boot.pdi"/>
   <File Type="PL-PDI-FILE" Name="blinkspeed_pld.pdi"/>
@@ -139,9 +139,7 @@
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2023">
-      <Desc>Default settings for Implementation.</Desc>
-    </StratHandle>
+    <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2023"/>
     <Step Id="init_design"/>
     <Step Id="opt_design"/>
     <Step Id="power_opt_design"/>

@@ -4,7 +4,7 @@
 # Vivado(TM)
 # runme.sh: a Vivado-generated Runs Script for UNIX
 # Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
-# Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+# Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 # 
 
 echo "This script was generated under a different operating system."
@@ -12,9 +12,9 @@ echo "Please update the PATH and LD_LIBRARY_PATH variables below, before executi
 exit
 
 if [ -z "$PATH" ]; then
-  PATH=C:/Xilinx/Vitis/2023.2/bin;C:/Xilinx/Vivado/2023.2/ids_lite/ISE/bin/nt64;C:/Xilinx/Vivado/2023.2/ids_lite/ISE/lib/nt64:C:/Xilinx/Vivado/2023.2/bin
+  PATH=F:/Xilinx/Vitis/2024.2/bin;F:/Xilinx/Vivado/2024.2/ids_lite/ISE/bin/nt64;F:/Xilinx/Vivado/2024.2/ids_lite/ISE/lib/nt64:F:/Xilinx/Vivado/2024.2/bin
 else
-  PATH=C:/Xilinx/Vitis/2023.2/bin;C:/Xilinx/Vivado/2023.2/ids_lite/ISE/bin/nt64;C:/Xilinx/Vivado/2023.2/ids_lite/ISE/lib/nt64:C:/Xilinx/Vivado/2023.2/bin:$PATH
+  PATH=F:/Xilinx/Vitis/2024.2/bin;F:/Xilinx/Vivado/2024.2/ids_lite/ISE/bin/nt64;F:/Xilinx/Vivado/2024.2/ids_lite/ISE/lib/nt64:F:/Xilinx/Vivado/2024.2/bin:$PATH
 fi
 export PATH
 
@@ -25,7 +25,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/Users/USER/Desktop/EBAZ4205/XilinxFPGA_SE/EBZA4205/02_blinkspeed/project_1/project_1.runs/synth_1'
+HD_PWD='C:/Users/hosomi/Programs/new/EBAZ4205_tutorial/tutorials/02_blinkspeed/project_1/project_1.runs/synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

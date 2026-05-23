@@ -1,8 +1,8 @@
-Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
-| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
-| Date         : Sat Mar 30 15:44:13 2024
-| Host         : DESKTOP-JPBOQSB running 64-bit major release  (build 9200)
+| Tool Version : Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
+| Date         : Sat May 23 18:59:42 2026
+| Host         : DESKTOP-IRLIVJV running 64-bit major release  (build 9200)
 | Command      : report_utilization -file blinkspeed_utilization_synth.rpt -pb blinkspeed_utilization_synth.pb
 | Design       : blinkspeed
 | Device       : xc7z010clg400-1
@@ -31,8 +31,8 @@ Table of Contents
 +-------------------------+------+-------+------------+-----------+-------+
 |        Site Type        | Used | Fixed | Prohibited | Available | Util% |
 +-------------------------+------+-------+------------+-----------+-------+
-| Slice LUTs*             |   21 |     0 |          0 |     17600 |  0.12 |
-|   LUT as Logic          |   21 |     0 |          0 |     17600 |  0.12 |
+| Slice LUTs*             |   22 |     0 |          0 |     17600 |  0.13 |
+|   LUT as Logic          |   22 |     0 |          0 |     17600 |  0.13 |
 |   LUT as Memory         |    0 |     0 |          0 |      6000 |  0.00 |
 | Slice Registers         |   55 |     0 |          0 |     35200 |  0.16 |
 |   Register as Flip Flop |   55 |     0 |          0 |     35200 |  0.16 |
@@ -42,6 +42,7 @@ Table of Contents
 +-------------------------+------+-------+------------+-----------+-------+
 * Warning! The Final LUT count, after physical optimizations and full implementation, is typically lower. Run opt_design after synthesis, if not already completed, for a more realistic count.
 Warning! LUT value is adjusted to account for LUT combining.
+Warning! For any ECO changes, please run place_design if there are unplaced instances
 
 
 1.1 Summary of Registers by Type
@@ -155,9 +156,9 @@ Warning! LUT value is adjusted to account for LUT combining.
 | LUT4     |    4 |                 LUT |
 | OBUF     |    3 |                  IO |
 | LUT2     |    3 |                 LUT |
+| LUT1     |    3 |                 LUT |
 | IBUF     |    3 |                  IO |
 | LUT5     |    2 |                 LUT |
-| LUT1     |    2 |                 LUT |
 | BUFG     |    1 |               Clock |
 +----------+------+---------------------+
 
